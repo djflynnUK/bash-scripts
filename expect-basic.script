@@ -1,0 +1,19 @@
+#! /usr/bin/expect -f 
+set server username@device 
+set pass password
+spawn ssh $server 
+expect "device password:" 
+send "<pass>\r" 
+expect "device-prompt#" 
+send "en\r" 
+expect "Password:" 
+send "<pass>\r" 
+expect "device-prompt#" 
+send "changeto context system\r" 
+expect "device-prompt#" 
+send "term pager 0\r" 
+expect "device-prompt#" 
+send "write terminal\r" 
+expect "device-prompt#" 
+send "exit\r" 
+expect eof
