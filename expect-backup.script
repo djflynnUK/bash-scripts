@@ -1,13 +1,13 @@
 #! /bin/bash
 
-hostname=bat-qhb-fwsm-system-context
+hostname=device-dns-hostname
 workingdir=/home/rancid/var/rancid/manual-backups
 logfile=/var/log/manual-backup.log
 #logfile=$workingdir/logfile
 
 # Expect bit to pull out router config
 EXPECTOUTPUT=$(/usr/bin/expect -c '
-set server bat-qhb-fwsm.uk.futurenet.com
+set server device-dns-hostname
 spawn ssh -b 1.1.1.1 rancid@$server 
 expect "rancid@server'\''s password:"
 send "password\r" 
