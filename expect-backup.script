@@ -1,0 +1,51 @@
+#! /bin/bash
+
+hostname=bat-qhb-fwsm-system-context
+workingdir=/home/rancid/var/rancid/manual-backups
+logfile=/var/log/manual-backup.log
+#logfile=$workingdir/logfile
+
+# Expect bit to pull out router config
+EXPECTOUTPUT=$(/usr/bin/expect -c '
+set server bat-qhb-fwsm.uk.futurenet.com
+spawn ssh -b 1.1.1.1 rancid@$server 
+expect "rancid@server'\''s password:"
+send "password\r" 
+expect "device-prompt#"
+send "en\r"
+expect "Password:" 
+send "password\r"
+expect "device-prompt#" 
+send "command to send here\r" 
+expect "device-prompt#" 
+send "term pager 0\r" 
+expect "device-prompt#" 
+send "write terminal\r" 
+expect "device-prompt#" 
+send "exit\r" 
+')
+sleep 1
+# Check if first copy of config file taken by expect exists 
+INITIAL=`ls -l $workingdir/ | grep $hostname > /dev/null ; echo $?`
+# If hostname file doesn't exist get config and add to svn repo 
+	if [ "$INITIAL" = "1" ];
+		then echo "$EXPECTOUTPUT"  | sed -r -n -e '/Saved/,${p}' > $workingdir/$hostname
+		echo "Added new file to svn - $hostname" >> $logfile
+		svn add $workingdir/$hostname >> $logfile 
+		svn commit -m "Added $hostname" $workingdir/$hostname >> $logfile
+# If hostname file does exist check the if latest copy is different
+	elif [ "$INITIAL" = "0" ];
+		then echo "$EXPECTOUTPUT"  | sed -r -n -e '/Saved/,${p}' > $workingdir/$hostname.tmp
+		diff -q $workingdir/$hostname $workingdir/$hostname.tmp > /dev/null
+		diff_output=`echo $?`
+# If diff detects a difference then overwrite the existing copy  and update svn
+        	if [ "$diff_output" = "1" ];
+			then mv $workingdir/$hostname.tmp $workingdir/$hostname
+			echo "`date` Changes made to $hostname" >> $logfile
+			svn commit -m "Changes made to $hostname" $workingdir/$hostname >> $logfile
+# If diff doesn't detect a difference do nothing
+        	else
+			rm $workingdir/$hostname.tmp
+			echo "`date` No Changes made" >> $logfile
+	        fi
+	fi
