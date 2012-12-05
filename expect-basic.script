@@ -1,4 +1,5 @@
 #! /usr/bin/expect -f 
+# This is for ssh'ing to a device 
 set server username@device 
 set pass password
 spawn ssh $server 
