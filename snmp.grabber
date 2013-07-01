@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# 1) Nmap against the required range
+# 2) grep out the Up hosts
+# 3) snmpget against the Up hosts
+# 4) Make it prettier (to do)
+
+# version 1.0
+# Another sh1tty script
+
+cd /tmp
+
+echo -n "Enter IP range to scan (Please use nmap format) :"
+read ip_range
+
+echo $ip_range
+
+# Remove / from inputted range :
+filename=`echo $ip_range | cut -f"1" -d "/"`
+echo $filename
+
+mkdir $filename
+cd $filename
+touch $filename.txt
+touch $filename.snmp
+touch $filename.up
+# Scan range into greppable format
+nmap -sP $ip_range -oG $filename.txt
+
+# grep out the required hosts
+more $filename.txt  | grep Up > $filename.up
+
+cut -f"2" -d" " $filename.up > $filename.snmp
+# run snmpget against the up hosts
+
+ for i in `cat $filename.snmp` ;
+ do     echo $i >> $filename.final
+        snmpget -v 2c -c D1sc0very $i 1.3.6.1.4.1.9.2.1.3.0  >> $filename.final
+        snmpget -v 2c -c D1sc0very $i 1.3.6.1.4.1.9.3.6.3.0 >> $filename.final
+done
+
+# Tidy Up
+rm $filename.snmp
+rm $filename.txt
+rm $filename.up
+
+cat $filename.final | cut -f"2" -d"=" > /tmp/$filename.hosts
+rm  $filename.final
+cd /tmp
+rmdir $filename
