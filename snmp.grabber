@@ -35,8 +35,8 @@ cut -f"2" -d" " $filename.up > $filename.snmp
 
  for i in `cat $filename.snmp` ;
  do     echo $i >> $filename.final
-        snmpget -v 2c -c D1sc0very $i 1.3.6.1.4.1.9.2.1.3.0  >> $filename.final
-        snmpget -v 2c -c D1sc0very $i 1.3.6.1.4.1.9.3.6.3.0 >> $filename.final
+        snmpget -v 2c -c <string> $i 1.3.6.1.4.1.9.2.1.3.0  >> $filename.final
+        snmpget -v 2c -c <string> $i 1.3.6.1.4.1.9.3.6.3.0 >> $filename.final
 done
 
 # Tidy Up
