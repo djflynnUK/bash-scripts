@@ -1,0 +1,24 @@
+My tmux.conf file :
+mapped prefix to CTRL +A
+
+Within tmux
+----------------
+prefix, everything follows after this command
+prefix + % = split single pane into 2, run again and will split current pane into 2 and so forth
+prefix + x = close current pane (prompts in status bar)
+prefix + d = detach back to "normal" shell
+prefix + c = create new window (new no appears in lower bar)
+prefix + number = move to that pane
+prefix + arrow = navigate around panes on current screen
+prefix + :  = opens up tmux command line
+prefix + R = reload .tmux.conf file
+prefix + & = kill off window (will prompt in status bar)
+prefix + n = next window
+prefix + p = previous window
+
+# From the normal shell :
+----------------------------------
+tmux = run new instance of tmux
+tmux ls = show open tmux sessions
+tmux attach -t 0 = attached to open tmux session 0
+tmux kill-session -t 0 = kill of open tmux session 0
