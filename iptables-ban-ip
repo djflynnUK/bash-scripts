@@ -1,0 +1,35 @@
+!/bin/sh
+
+now=$(date +"%m_%d_%Y")
+
+#grep POSSIBLE /var/log/auth.log > /tmp/banned.ip1
+#grep -Eo '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' /tmp/banned.ip1 | sort -u > /tmp/banned.ip2
+
+> /tmp/iptables.commands
+> /tmp/banned.ip1
+> /tmp/banned.ip2
+> /tmp/banned.iptables
+
+# Pull out all IP addresses from /var/log/auth.log and sort numerically and uniquely
+grep -Eo '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' /var/log/auth.log  > /tmp/banned.ip1
+sort -un /tmp/banned.ip1 > /tmp/banned.ip2
+grep -v <local-IP> /tmp/banned.ip2 > /tmp/banned.iptables
+for i in `cat /tmp/banned.iptables` ;
+ do echo iptables -A INPUT -s $i -j DROP >> /tmp/iptables.commands  # Add iptables commands around the IP addresses
+done
+sleep 1
+chmod 666 /tmp/iptables.commands
+
+# Send email detailing IP addresses
+
+cat > /tmp/$now.txt << EOF
+To: target@email.com
+Subject: To be banned
+From: sender@sender.com
+
+List of to be banned IPs :
+EOF
+
+cat /tmp/iptables.commands >> /tmp/$now.txt
+
+/usr/sbin/sendmail -t < /tmp/$now.txt
