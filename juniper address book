@@ -1,0 +1,51 @@
+ #! /bin/bash
+ # Get allocated IP range of site and condition in order to pair up IP addresses to hostnames
+ echo -n "Please enter condition A :  "
+ read CONA
+ echo -n "Please enter allocated subnet number (i.e. 192.168.0.0): "
+ read IP
+ echo -n "Please enter code : "
+ read SITECODE
+ echo -n "Another condition required ? (Please enter Y/N) : "
+ read CONB
+ echo -n "Please enter domain (A/B) : "
+ read DOMAIN
+ OCT1=$(echo $IP | cut -d "." -f1)
+ OCT2=$(echo $IP | cut -d "." -f2)
+ OCT3=$(echo $IP | cut -d "." -f3)
+ OCT4=$(echo $IP | cut -d "." -f4)
+ 
+ # juniper address book statement - define hostname scheme here..
+ SETADDRESS="set security address-book global address "HOST-"$SITECODE-$DOMAIN"ABC"$SITECODE""
+ 
+ case CONA in
+ 1)
+         # address book entries 
+         # Increment value of OCTET4 and echo out corresponding hostname, repeat as per no of hosts
+         echo "$SITECODE $CONA address book entries"
+         (( OCT4++))
+         echo "$SETADDRESS""$SITECODE"HOST01" "$OCT1.$OCT2.$OCT3.$OCT4"/32"
+         (( OCT4++))
+         echo "$SETADDRESS""$SITECODE"HOST02" "$OCT1.$OCT2.$OCT3.$OCT4"/32"
+         # Example if loop within case statement
+         if [ $CONB = Y ] || [ $CONB = y ] ; then
+                 (( OCT4++))
+                 echo "$SETADDRESS""$SITECODE"HOST03" "$OCT1.$OCT2.$OCT3.$OCT4"/32"
+         fi
+ 
+         (( OCT4++))
+         echo "$SETADDRESS""$SITECODE"HOST04" "$OCT1.$OCT2.$OCT3.$OCT4"/32"
+         (( OCT4++))
+         echo "$SETADDRESS""$SITECODE"HOST05" "$OCT1.$OCT2.$OCT3.$OCT4"/32"
+         (( OCT4++))
+         echo "$SETADDRESS""$SITECODE"HOST05" "$OCT1.$OCT2.$OCT3.$OCT4"/32"
+         (( OCT4++))
+         echo "$SETADDRESS""$SITECODE"HOST06" "$OCT1.$OCT2.$OCT3.$OCT4"/32"
+         (( OCT4++))
+         echo "$SETADDRESS""$SITECODE"HOST07" "$OCT1.$OCT2.$OCT3.$OCT4"/32"
+         (( OCT4++))
+         ;;
+ 2)
+         echo "Option 2 selected"
+         ;;
+ esac
