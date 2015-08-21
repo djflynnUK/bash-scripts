@@ -1,0 +1,35 @@
+version 1.0;
+
+/* Namespace declarations */
+ns junos = "http://xml.juniper.net/junos/*/junos";
+ns xnm = "http://xml.juniper.net/xnm/1.1/xnm";
+ns jcs = "http://xml.juniper.net/junos/commit-scripts/1.0";
+
+/* Imports */
+import "../import/junos.xsl";
+
+/* Junos Space specific context, name and description */
+/* @CONTEXT = "/device[system-information/os-name="junos-es"]" */
+/* @NAME = "Clear Security Hit Counters" */
+/* @DESCRIPTION = "Clears Security Hit Counters" */
+/* @ISLOCAL = "true" */
+/* @EXECUTIONTYPE = "SINGLEEXECUTION" */
+/* @CONFIRMATION = "Do you want to proceed?" */
+
+var $local = jcs:open();
+
+match / {
+	<op-script-results> {
+		<output> {
+
+			/* clear hits */
+			var $clear-rpc = <clear-security-policies-hit-count>;
+			var $clear-results = jcs:execute($local,$clear-rpc);
+
+
+
+			expr jcs:close($local);
+
+		}
+	}
+}
