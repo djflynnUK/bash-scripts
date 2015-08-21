@@ -1,3 +1,4 @@
+/* Cribbed together script - run from Junos SPACE and clear security policies on selected devices */
 version 1.0;
 
 /* Namespace declarations */
