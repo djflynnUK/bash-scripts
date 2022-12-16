@@ -12,7 +12,7 @@ prefix + number = move to that pane
 prefix + arrow = navigate around panes on current screen
 prefix + :  = opens up tmux command line
 prefix + R = reload .tmux.conf file
-prefix + & = kill off window (will prompt in status bar)
+prefix + & = kill off window (will prompt in status bar - kills whole tmux session off)
 prefix + n = next window
 prefix + p = previous window
 
