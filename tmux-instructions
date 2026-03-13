@@ -23,4 +23,4 @@ tmux ls = show open tmux sessions
 tmux attach -t 0 = attached to open tmux session 0
 tmux kill-session -t 0 = kill of open tmux session 0
 
-tmux is pretty useful
+tmux is pretty useful as is screen
